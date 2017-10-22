@@ -103,3 +103,5 @@ ENV/
 nucc
 
 entity_vector.model.bin
+latest-ja-word2vec-gensim-model.zip
+word2vec.model*
