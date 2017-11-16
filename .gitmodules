@@ -1,0 +1,3 @@
+[submodule "Word2Vec/japanese-word2vec-model-builder"]
+	path = Word2Vec/japanese-word2vec-model-builder
+	url = https://github.com/shiroyagicorp/japanese-word2vec-model-builder
