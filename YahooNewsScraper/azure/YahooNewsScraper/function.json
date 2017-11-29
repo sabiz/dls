@@ -1,0 +1,18 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "name": "myTimer",
+      "type": "timerTrigger",
+      "direction": "in",
+      "schedule": "0 * * * * *"
+    },
+     {
+      "type": "apiHubFile",
+      "name": "outputFile",
+      "path": "azure/{sys.utcNow:yyyy-mm-dd-hh-MM-ss}.json",
+      "connection": "onedrive_ONEDRIVE",
+      "direction": "out"
+    }
+  ]
+}
