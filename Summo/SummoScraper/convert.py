@@ -70,16 +70,16 @@ with open('suumo_conv.csv','w') as out:
                     amortization = float(tmp[1].replace('万円','').replace('-','0')) if 1 < len(tmp) else 0.0
 
                     #間取り
-                    service_room = 1 if re.match('S',row[11]) else 0
-                    row[11] = row[11].replace('S','')
-                    dining_kitchen = 1 if re.match('DK',row[11]) else 0
-                    row[11] = row[11].replace('DK','')
-                    kitchen = 1 if re.match('K',row[11]) else 0
-                    row[11] = row[11].replace('K','')
-                    living = 1 if re.match('L',row[11]) else 0
-                    row[11] = row[11].replace('L','')
-                    one_room = 1 if re.match('ワンルーム',row[11]) else 0
+                    one_room = 1 if 0 <= row[11].find('ワンルーム') else 0
                     row[11] = row[11].replace('ワンルーム','')
+                    service_room = 1 if 0 <= row[11].find('S') else 0
+                    row[11] = row[11].replace('S','')
+                    dining_kitchen = 1 if 0<= row[11].find('DK') else 0
+                    row[11] = row[11].replace('DK','')
+                    kitchen = 1 if 0<= row[11].find('K') else 0
+                    row[11] = row[11].replace('K','')
+                    living = 1 if 0<= row[11].find('L') else 0
+                    row[11] = row[11].replace('L','')
                     room = int(row[11]) if 0 < len(row[11]) else 0
 
                     #専有面積
