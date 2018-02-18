@@ -2,6 +2,32 @@ import csv
 import re
 
 target_files = ['suumo_1.csv','suumo_2.csv']
+ward_list={
+'千代田':1,
+'中央':2,
+'港':3,
+'新宿':4,
+'文京':5,
+'台東':6,
+'墨田':7,
+'江東':8,
+'品川':9,
+'目黒':10,
+'大田':11,
+'世田谷':12,
+'渋谷':13,
+'中野':14,
+'杉並':15,
+'豊島':16,
+'北':17,
+'荒川':18,
+'板橋':19,
+'練馬':20,
+'足立':21,
+'葛飾':22,
+'江戸川':23
+}
+
 with open('suumo_conv.csv','w') as out:
     out.write('名前,区,住所,最寄り駅1,徒歩1,最寄り駅2,徒歩2,最寄り駅3,徒歩3,'+\
             '築年数,高さ,階,家賃,管理費,敷金,礼金,保証金,敷引,償却,S,DK,K,L,ワンルーム,部屋数,専有面積\n')
@@ -16,7 +42,7 @@ with open('suumo_conv.csv','w') as out:
                     #住所
                     row[1] = row[1].replace('東京都','')
                     tmp = row[1].split('区')
-                    ward = tmp[0]+'区'
+                    ward =ward_list[tmp[0]]
                     address = tmp[1]
 
                     #最寄り駅
@@ -53,6 +79,7 @@ with open('suumo_conv.csv','w') as out:
                     #回数
                     floor = row[7].replace('階','')
                     floor = floor.split('-')[0]
+                    floor = floor.replace('B','-')
 
                     #家賃
                     rent = float(row[8].replace('万円',''))
