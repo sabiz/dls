@@ -1,5 +1,6 @@
 import csv
 import re
+import zenhan
 
 target_files = ['suumo_1.csv','suumo_2.csv']
 ward_list={
@@ -28,8 +29,17 @@ ward_list={
 '江戸川':23
 }
 
+address_table={}
+address_index=-1
+route_table={}
+route_index=-1
+station_table={}
+station_index=-1
+
 with open('suumo_conv.csv','w') as out:
-    out.write('名前,区,住所,最寄り駅1,徒歩1,最寄り駅2,徒歩2,最寄り駅3,徒歩3,'+\
+    # out.write('名前,区,住所,路線1,最寄り駅1,徒歩1,路線2,最寄り駅2,徒歩2,路線3,最寄り駅3,徒歩3,'+\
+    #         '築年数,高さ,階,家賃,管理費,敷金,礼金,保証金,敷引,償却,S,DK,K,L,ワンルーム,部屋数,専有面積\n')
+    out.write('区,住所,路線1,最寄り駅1,徒歩1,路線2,最寄り駅2,徒歩2,路線3,最寄り駅3,徒歩3,'+\
             '築年数,高さ,階,家賃,管理費,敷金,礼金,保証金,敷引,償却,S,DK,K,L,ワンルーム,部屋数,専有面積\n')
     for tf in target_files:
         with open(tf, 'r') as f:
@@ -44,11 +54,25 @@ with open('suumo_conv.csv','w') as out:
                     tmp = row[1].split('区')
                     ward =ward_list[tmp[0]]
                     address = tmp[1]
+                    address = zenhan.z2h(address)
+                    tmp = re.search('(.+)\d+|', address)
+                    address = tmp.group(1) if tmp.group(1) else address
+                    try:
+                        address=address_table[address]
+                    except KeyError:
+                        address_index=address_index+1
+                        address_table[address]=address_index
+                        address=address_index
+
+
 
                     #最寄り駅
                     route1=''
                     route2=''
                     route3=''
+                    station1=''
+                    station2=''
+                    station3=''
                     walk1=''
                     walk2=''
                     walk3=''
@@ -56,14 +80,50 @@ with open('suumo_conv.csv','w') as out:
                         # 車N分は無視
                         tmp = row[2].split(' 歩')
                         route1,station1 = tmp[0].split('/')
+                        try:
+                            route1=route_table[route1]
+                        except KeyError:
+                            route_index=route_index+1
+                            route_table[route1]=route_index
+                            route1=route_index
+                        try:
+                            station1=station_table[station1]
+                        except KeyError:
+                            station_index=station_index+1
+                            station_table[station1]=station_index
+                            station1=station_index
                         walk1 = tmp[1].replace('分','')
 
                         tmp = row[3].split(' 歩')
                         route2,station2 = tmp[0].split('/')
+                        try:
+                            route2=route_table[route2]
+                        except KeyError:
+                            route_index=route_index+1
+                            route_table[route2]=route_index
+                            route2=route_index
+                        try:
+                            station2=station_table[station2]
+                        except KeyError:
+                            station_index=station_index+1
+                            station_table[station2]=station_index
+                            station2=station_index
                         walk2 = tmp[1].replace('分','')
 
                         tmp = row[4].split(' 歩')
                         route3,station3 = tmp[0].split('/')
+                        try:
+                            route3=route_table[route3]
+                        except KeyError:
+                            route_index=route_index+1
+                            route_table[route3]=route_index
+                            route3=route_index
+                        try:
+                            station3=station_table[station3]
+                        except KeyError:
+                            station_index=station_index+1
+                            station_table[station3]=station_index
+                            station3=station_index
                         walk3 = tmp[1].replace('分','')
                     except :
                         pass
@@ -112,14 +172,18 @@ with open('suumo_conv.csv','w') as out:
                     #専有面積
                     area = float(row[12].replace('m',''))
 
-                    out.write(str(name)+','+ \
+                    out.write(\
+                            # str(name)+','+ \
                             str(ward) + ',' + \
                             str(address) + ',' + \
                             str(route1) + ',' + \
+                            str(station1) + ',' + \
                             str(walk1) + ',' + \
                             str(route2) + ',' + \
+                            str(station2) + ',' + \
                             str(walk2) + ',' + \
                             str(route3) + ',' + \
+                            str(station3) + ',' + \
                             str(walk3) + ',' + \
                             str(built) + ',' + \
                             str(high) + ',' + \
@@ -139,6 +203,13 @@ with open('suumo_conv.csv','w') as out:
                             str(room) + ',' +\
                             str(area)+'\n')
                 except :
-                    print(sys.exc_info())
+                    import traceback
+                    traceback.print_exc()
+                    print("error: ",row)
                     continue
-
+with open('address_table.txt','w') as out:
+    out.write(str(address_table).replace(',',',\n'))
+with open('route_table.txt','w') as out:
+    out.write(str(route_table).replace(',',',\n'))
+with open('station_table.txt','w') as out:
+    out.write(str(station_table).replace(',',',\n'))
