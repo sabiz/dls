@@ -2,7 +2,7 @@ import csv
 import re
 import zenhan
 
-target_files = ['suumo_1.csv','suumo_2.csv']
+target_files = ['suumo.csv']
 ward_list={
 '千代田':1,
 '中央':2,
