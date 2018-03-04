@@ -110,3 +110,8 @@ ldcc-20140209.tar.gz
 text
 node_modules
 local.settings.json
+address_table.txt
+route_table.txt
+station_table.txt
+suumo.csv
+suumo_conv.csv
