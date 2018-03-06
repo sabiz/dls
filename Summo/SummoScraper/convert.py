@@ -39,8 +39,10 @@ station_index=-1
 with open('suumo_conv.csv','w') as out:
     # out.write('名前,区,住所,路線1,最寄り駅1,徒歩1,路線2,最寄り駅2,徒歩2,路線3,最寄り駅3,徒歩3,'+\
     #         '築年数,高さ,階,家賃,管理費,敷金,礼金,保証金,敷引,償却,S,DK,K,L,ワンルーム,部屋数,専有面積\n')
-    out.write('区,住所,路線1,最寄り駅1,徒歩1,路線2,最寄り駅2,徒歩2,路線3,最寄り駅3,徒歩3,'+\
-            '築年数,高さ,階,家賃,管理費,敷金,礼金,保証金,敷引,償却,S,DK,K,L,ワンルーム,部屋数,専有面積\n')
+    # out.write('区,住所,路線1,最寄り駅1,徒歩1,路線2,最寄り駅2,徒歩2,路線3,最寄り駅3,徒歩3,'+\
+    #         '築年数,高さ,階,家賃,管理費,敷金,礼金,保証金,敷引,償却,S,DK,K,L,ワンルーム,部屋数,専有面積\n')
+    out.write('ward,address,route1,station1,walk1,route2,station2,walk2,route3,station3,walk3,'+\
+            'years,height,floor,rent,admin_cost,deposit,gratuity,sec,shikibiki,amortization,S,DK,K,L,one_room,room,area\n')
     for tf in target_files:
         with open(tf, 'r') as f:
             reader = csv.reader(f)
