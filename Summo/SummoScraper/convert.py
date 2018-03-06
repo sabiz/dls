@@ -80,51 +80,117 @@ with open('suumo_conv.csv','w') as out:
                         # 車N分は無視
                         tmp = row[2].split(' 歩')
                         route1,station1 = tmp[0].split('/')
-                        try:
-                            route1=route_table[route1]
-                        except KeyError:
-                            route_index=route_index+1
-                            route_table[route1]=route_index
-                            route1=route_index
-                        try:
-                            station1=station_table[station1]
-                        except KeyError:
-                            station_index=station_index+1
-                            station_table[station1]=station_index
-                            station1=station_index
-                        walk1 = tmp[1].replace('分','')
+                        if station1 == '学芸大学':
+                            station1 = '学芸大学駅'
+                        if tmp[0].find('バス') > -1 or \
+                            re.match(r'^.{1,2}\d\d',route1) or \
+                            re.match(r'^.{2}$',route1) or \
+                            route1.find('北加平') > -1 or \
+                            tmp[0].find('朝日自動車') > -1 or \
+                            tmp[0].find('東京都交通局') > -1 or \
+                            route1.find('町屋駅') > -1 or \
+                            route1.find('王子駅前') > -1 or \
+                            route1.find('新小岩') > -1 or \
+                            route1.find('玉４・玉５') > -1 or \
+                            route1.find('ＪＲ山手線　品川駅') > -1 or \
+                            route1.find('一之江') > -1 or \
+                            route1.find('南コース') > -1 or \
+                            route1.find('赤羽東口行') > -1 or \
+                            re.search(r'車\d{1,2}分', station1) \
+                            : #最寄りがバス停もしくは車でN分のものは除外
+                            route1='-1'
+                            station1='-1'
+                            walk1 = '100'
+                        else:
+                            try:
+                                route1=route_table[route1]
+                            except KeyError:
+                                route_index=route_index+1
+                                route_table[route1]=route_index
+                                route1=route_index
+                            try:
+                                station1=station_table[station1]
+                            except KeyError:
+                                station_index=station_index+1
+                                station_table[station1]=station_index
+                                station1=station_index
+                            walk1 = tmp[1].replace('分','')
 
                         tmp = row[3].split(' 歩')
                         route2,station2 = tmp[0].split('/')
-                        try:
-                            route2=route_table[route2]
-                        except KeyError:
-                            route_index=route_index+1
-                            route_table[route2]=route_index
-                            route2=route_index
-                        try:
-                            station2=station_table[station2]
-                        except KeyError:
-                            station_index=station_index+1
-                            station_table[station2]=station_index
-                            station2=station_index
-                        walk2 = tmp[1].replace('分','')
+                        if station2 == '学芸大学':
+                            station2 = '学芸大学駅'
+                        if tmp[0].find('バス') > -1 or \
+                            re.match(r'^.{1,2}\d\d',route2) or \
+                            re.match(r'^.{2}$',route2) or \
+                            route2.find('北加平') > -1 or \
+                            tmp[0].find('朝日自動車') > -1 or \
+                            tmp[0].find('東京都交通局') > -1 or \
+                            route2.find('町屋駅') > -1 or \
+                            route2.find('王子駅前') > -1 or \
+                            route2.find('新小岩') > -1 or \
+                            route2.find('玉４・玉５') > -1 or \
+                            route2.find('南コース') > -1 or \
+                            route2.find('ＪＲ山手線　品川駅') > -1 or \
+                            route2.find('一之江') > -1 or \
+                            route2.find('赤羽東口行') > -1 or \
+                            re.search(r'車\d{1,2}分', station2) \
+                            : #最寄りがバス停のものは除外
+                            route2='-1'
+                            station2='-1'
+                            walk2 = '100'
+                        else:
+                            try:
+                                route2=route_table[route2]
+                            except KeyError:
+                                route_index=route_index+1
+                                route_table[route2]=route_index
+                                route2=route_index
+                            try:
+                                station2=station_table[station2]
+                            except KeyError:
+                                station_index=station_index+1
+                                station_table[station2]=station_index
+                                station2=station_index
+                            walk2 = tmp[1].replace('分','')
 
                         tmp = row[4].split(' 歩')
                         route3,station3 = tmp[0].split('/')
-                        try:
-                            route3=route_table[route3]
-                        except KeyError:
-                            route_index=route_index+1
-                            route_table[route3]=route_index
-                            route3=route_index
-                        try:
-                            station3=station_table[station3]
-                        except KeyError:
-                            station_index=station_index+1
-                            station_table[station3]=station_index
-                            station3=station_index
-                        walk3 = tmp[1].replace('分','')
+                        if station3 == '学芸大学':
+                            station3 = '学芸大学駅'
+                        if tmp[0].find('バス') > -1 or \
+                            re.match(r'^.{1,2}\d\d',route3) or \
+                            re.match(r'^.{2}$',route3) or \
+                            route3.find('北加平') > -1 or \
+                            tmp[0].find('朝日自動車') > -1 or \
+                            tmp[0].find('東京都交通局') > -1 or \
+                            route3.find('町屋駅') > -1 or \
+                            route3.find('新小岩') > -1 or \
+                            route3.find('王子駅前') > -1 or \
+                            route3.find('一之江') > -1 or \
+                            route3.find('ＪＲ山手線　品川駅') > -1 or \
+                            route3.find('南コース') > -1 or \
+                            route3.find('玉４・玉５') > -1 or \
+                            route3.find('赤羽東口行') > -1 or \
+                            re.search(r'車\d{1,2}分', station3) \
+                            : #最寄りがバス停のものは除外
+                            route3='-1'
+                            station3='-1'
+                            walk3 = '100'
+                        else:
+                            try:
+                                route3=route_table[route3]
+                            except KeyError:
+                                route_index=route_index+1
+                                route_table[route3]=route_index
+                                route3=route_index
+                            try:
+                                station3=station_table[station3]
+                            except KeyError:
+                                station_index=station_index+1
+                                station_table[station3]=station_index
+                                station3=station_index
+                            walk3 = tmp[1].replace('分','')
                     except :
                         pass
 
