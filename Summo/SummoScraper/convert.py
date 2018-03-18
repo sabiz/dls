@@ -1,6 +1,8 @@
 import csv
 import re
-import zenhan
+import pandas as pd
+import signal
+signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 target_files = ['suumo.csv']
 ward_list={
@@ -29,12 +31,12 @@ ward_list={
 '江戸川':23
 }
 
-address_table={}
-address_index=-1
 route_table={}
 route_index=-1
 station_table={}
 station_index=-1
+
+map_data = pd.read_csv('map_data.csv')
 
 with open('suumo_conv.csv','w') as out:
     # out.write('名前,区,住所,路線1,最寄り駅1,徒歩1,路線2,最寄り駅2,徒歩2,路線3,最寄り駅3,徒歩3,'+\
@@ -42,7 +44,7 @@ with open('suumo_conv.csv','w') as out:
     # out.write('区,住所,路線1,最寄り駅1,徒歩1,路線2,最寄り駅2,徒歩2,路線3,最寄り駅3,徒歩3,'+\
     #         '築年数,高さ,階,家賃,管理費,敷金,礼金,保証金,敷引,償却,S,DK,K,L,ワンルーム,部屋数,専有面積\n')
     out.write('ward,address,route1,station1,walk1,route2,station2,walk2,route3,station3,walk3,'+\
-            'years,height,floor,rent,admin_cost,deposit,gratuity,sec,shikibiki,amortization,S,DK,K,L,one_room,room,area\n')
+            'years,height,floor,rent,admin_cost,deposit,gratuity,sec,shikibiki,amortization,S,DK,K,L,one_room,room,area,lat,lon\n')
     for tf in target_files:
         with open(tf, 'r') as f:
             reader = csv.reader(f)
@@ -56,16 +58,23 @@ with open('suumo_conv.csv','w') as out:
                     tmp = row[1].split('区')
                     ward =ward_list[tmp[0]]
                     address = tmp[1]
-                    address = zenhan.z2h(address)
-                    tmp = re.search('(.+)\d+|', address)
-                    address = tmp.group(1) if tmp.group(1) else address
+                    address = address.translate(str.maketrans('１２３４５６７８９','一二三四五六七八九'))
+                    address = re.sub('(?P<n>[一二三四五六七八九十])$','\g<n>丁目', address)
+                    if re.match(r'(神田三崎町)|(神田猿楽町).+',address):
+                        address = address.replace('神田','')
+                    if re.match(r'四谷本塩町',address):
+                        address = address.replace('四谷','')
+                    if '坂町' == address:
+                        address = '四谷'+address
+                    address = address.replace('ヶ','ケ')
+                    map_record = map_data[map_data['大字町丁目名'] == address]
+                    lat = 0
+                    lon = 0
                     try:
-                        address=address_table[address]
-                    except KeyError:
-                        address_index=address_index+1
-                        address_table[address]=address_index
-                        address=address_index
-
+                        lat = map_record.iloc[0]['緯度']
+                        lon = map_record.iloc[0]['経度']
+                    except:
+                        print(address)
 
 
                     #最寄り駅
@@ -269,14 +278,14 @@ with open('suumo_conv.csv','w') as out:
                             str(living) + ',' + \
                             str(one_room) + ',' + \
                             str(room) + ',' +\
-                            str(area)+'\n')
+                            str(area)+',' +\
+                            str(lat) + ',' +\
+                            str(lon) + '\n')
                 except :
                     import traceback
                     traceback.print_exc()
                     print("error: ",row)
                     continue
-with open('address_table.txt','w') as out:
-    out.write(str(address_table).replace(',',',\n'))
 with open('route_table.txt','w') as out:
     out.write(str(route_table).replace(',',',\n'))
 with open('station_table.txt','w') as out:
