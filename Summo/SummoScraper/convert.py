@@ -1,8 +1,9 @@
+import signal
+signal.signal(signal.SIGINT, signal.SIG_DFL)
 import csv
 import re
 import pandas as pd
-import signal
-signal.signal(signal.SIGINT, signal.SIG_DFL)
+from geopy.distance import great_circle
 
 target_files = ['suumo.csv']
 ward_list={
@@ -37,6 +38,8 @@ station_table={}
 station_index=-1
 
 map_data = pd.read_csv('map_data.csv')
+TOKYO_STATION=(35.681167,139.767052)
+
 
 with open('suumo_conv.csv','w') as out:
     # out.write('名前,区,住所,路線1,最寄り駅1,徒歩1,路線2,最寄り駅2,徒歩2,路線3,最寄り駅3,徒歩3,'+\
@@ -44,7 +47,8 @@ with open('suumo_conv.csv','w') as out:
     # out.write('区,住所,路線1,最寄り駅1,徒歩1,路線2,最寄り駅2,徒歩2,路線3,最寄り駅3,徒歩3,'+\
     #         '築年数,高さ,階,家賃,管理費,敷金,礼金,保証金,敷引,償却,S,DK,K,L,ワンルーム,部屋数,専有面積\n')
     out.write('ward,address,route1,station1,walk1,route2,station2,walk2,route3,station3,walk3,'+\
-            'years,height,floor,rent,admin_cost,deposit,gratuity,sec,shikibiki,amortization,S,DK,K,L,one_room,room,area,lat,lon\n')
+            'years,height,floor,rent,admin_cost,deposit,gratuity,sec,shikibiki,amortization,'+\
+            'S,DK,K,L,one_room,room,area,lat,lon,distance\n')
     for tf in target_files:
         with open(tf, 'r') as f:
             reader = csv.reader(f)
@@ -70,9 +74,11 @@ with open('suumo_conv.csv','w') as out:
                     map_record = map_data[map_data['大字町丁目名'] == address]
                     lat = 0
                     lon = 0
+                    distance = 0
                     try:
                         lat = map_record.iloc[0]['緯度']
                         lon = map_record.iloc[0]['経度']
+                        distance = great_circle(TOKYO_STATION, (lat,lon)).kilometers
                     except:
                         print(address)
 
@@ -280,7 +286,8 @@ with open('suumo_conv.csv','w') as out:
                             str(room) + ',' +\
                             str(area)+',' +\
                             str(lat) + ',' +\
-                            str(lon) + '\n')
+                            str(lon) + ',' +\
+                            str(distance) + '\n')
                 except :
                     import traceback
                     traceback.print_exc()
