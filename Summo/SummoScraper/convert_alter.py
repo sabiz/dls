@@ -129,7 +129,7 @@ with open('suumo_distance_joukou.csv','w') as out:
                     out.write(\
                             str(walk1) + ',' + \
                             str(joukou) + ',' + \
-                            str(int(rent)+int(admin_cost)) + ',' + \
+                            str(int(rent)+int(admin_cost)/10000) + ',' + \
                             str(area)+',' +\
                             str(lat) + ',' +\
                             str(lon) + ',' +\
